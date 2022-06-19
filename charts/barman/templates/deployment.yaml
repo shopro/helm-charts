@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: 
+      app: {{- include "barman.fullname" . | nindent 8 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{- include "barman.fullname" . | nindent 12 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}-secret
+          volumeMounts:
+          - name: ssh_key
+            mountPath: "/home/barman/.ssh/id_rsa"
+            readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: ssh_key
+        secret:
+          secretName: {{ .Values.secret.name }}-secret
+          items:
+          - key: SSH_PRIVATE_KEY

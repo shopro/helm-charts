@@ -1,0 +1,49 @@
+image:
+  # -- Container image to deploy
+  repository: ubcctlt/barman
+  # -- When to pull the container image
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag whose default is the chart version.
+  tag: "v2.19"
+
+nameOverride: ""
+fullnameOverride: ""
+
+# -- Resource limits and requests
+resources: {}
+  # limits:
+  #   memory: 256Mi
+  #   cpu: 100m
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+podAnnotations: {}
+
+# -- Name of secret
+secret:
+  name: ""
+
+persistence:
+  data:
+    # -- Enable persistent storage for backup data
+    enabled: true
+    # -- Access mode for persistent storage
+    accessMode: ReadWriteOnce
+    # -- Size of storage volume
+    size: 25Gi
+    # -- Storage class
+    storageClass: ""
+    # -- Add annotations to backup data PVC
+    annotations: {}
+  recover:
+    # -- Enable persistent storage for recovery
+    enabled: false
+    # -- Access mode for persistent storage
+    accessMode: ReadWriteOnce
+    # -- Size of storage volume
+    size: 25Gi
+    # -- Storage class
+    storageClass: ""
+    # -- Add annotations to recovery PVC
+    annotations: {}
